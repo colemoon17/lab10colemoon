@@ -81,9 +81,6 @@ def daily_temperatures(temps):
     #   add each day to a stack
     #   when a new temp is added, check it against every other
     #   if the temp is higher, remove the other temp
-    # TODO: for each day, return how many days you'd wait for a WARMER temperature.
-    #   Put 0 if no warmer day ever comes.
-    #   Example: [73,74,75,71,69,72,76,73]  ->  [1,1,4,2,1,1,0,0]
     stack = []
     output = []
 
