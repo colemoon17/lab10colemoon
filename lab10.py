@@ -12,30 +12,99 @@
 
 def eval_rpn(tokens):
     # Outline (write your plan here first):
-    #   ...
-    # TODO: `tokens` is a list of strings in Reverse Polish Notation - either an integer
-    #   or one of the operators "+", "-", "*", "/". Evaluate it and return the integer
-    #   result. Division should truncate toward zero (int(a / b)).
-    #   Example: ["2","1","+","3","*"]  ->  9
-    pass
+    #   loop through each item
+    #   if the value is a number, add to stack
+    #   if its an operator, take the top 2 numbers and combine using the operator
+    # do this by checking string of the operator and using if else
+
+    stack = []
+    for item in tokens:
+        if not item in "+-/*":
+            # add num to stack
+            stack.append(int(item))
+        else:
+            # print(stack)
+            # check operator
+            if item == '+':
+                stack.append(stack.pop() + stack.pop())
+            elif item == '-':
+                stack.append(stack.pop() - stack.pop())
+            elif item == '*':
+                stack.append(stack.pop() * stack.pop())
+            elif item == '/':
+                numA = stack.pop()
+                numB = stack.pop()
+                # print(numB // numA)
+                stack.append(int(numB / numA))
+
+            # print(stack)
+
+    return stack.pop()
 
 
 def decode_string(s):
     # Outline:
-    #   ...
-    # TODO: decode a string written with the rule k[encoded], meaning `encoded` repeated
-    #   k times. The brackets can be nested.
-    #   Example: "3[a2[c]]"  ->  "accaccacc"
-    pass
+    #   go through list
+    #   if the char is numeric, keep track of it + potential earlier digits (i.e. recognize 10 as 10 and not 1 + 0)
+    #   keep track of repeat count and current string until a bracket opens
+    #   when a bracket opens, add current string and count to stacks
+    #   reset the current string and count and keep tracking
+    #   when a bracket closes, take current string and top of count stack, add the string count# of times to previous string
+    stringstack = []
+    countstack = []
 
+    currentStr = ""
+    currentCount = 0
+    
+    for char in s:
+        if char.isnumeric():
+            currentCount *= 10
+            currentCount += int(char)
+        elif char == '[':
+            stringstack.append(currentStr)
+            countstack.append(currentCount)
+
+            currentStr = ""
+            currentCount = 0
+        elif char == ']':
+            lastCount = countstack.pop()
+            lastString = stringstack.pop()
+
+            currentStr = lastString + currentStr * lastCount
+        else:
+            currentStr += char
+
+    return currentStr
 
 def daily_temperatures(temps):
     # Outline:
-    #   ...
+    #   add each day to a stack
+    #   when a new temp is added, check it against every other
+    #   if the temp is higher, remove the other temp
     # TODO: for each day, return how many days you'd wait for a WARMER temperature.
     #   Put 0 if no warmer day ever comes.
     #   Example: [73,74,75,71,69,72,76,73]  ->  [1,1,4,2,1,1,0,0]
-    pass
+    stack = []
+    output = []
+
+    for i in range(len(temps)):
+        output.append(0)
+
+    for temp in temps:
+        stack.append(temp)
+        for dayToCheck in stack:
+            if dayToCheck != None:
+                if temp > dayToCheck:
+                    output[stack.index(dayToCheck)] = stack.index(temp) - stack.index(dayToCheck)
+                    stack[stack.index(dayToCheck)] = None
+
+    return output
+
+
+    
+
+
+
 
 
 def num_islands(grid):   # Part 4 - stretch (optional)
@@ -49,7 +118,7 @@ def num_islands(grid):   # Part 4 - stretch (optional)
 
 def main():
     # Optional scratch space - try your functions here, then run: python lab10.py
-    # print(eval_rpn(["2", "1", "+", "3", "*"]))   # 9
+    # print(eval_rpn(["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]))   # 9
     pass
 
 
